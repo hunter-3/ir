@@ -260,6 +260,32 @@ C:\> netsh firewall show config
 
 ---
 
+**Some Key Windows Events**
+
+| Log Name | Provider Name	| Event IDs	| Description                                               |
+| :------: | -------------- | :-------: | :-------------------------------------------------------- | 
+| System	 |	              | 7045      |	A service was installed in the system       |
+| System	 |                |	7030	    | ...service is marked as an interactive service. However, the system is configured to not allow interactive services. This service may not function properly. |
+| System 	 |                |	1056      |	Create RDP certificate |
+| Security |	              |	7045, 10000, 10001, 10100, 20001, 20002, 20003, 24576, 24577, 24579 |	Insert USB |
+| Security |	              |	4624	    | Account Logon |
+| Security |		            | 4625      |	Failed login |
+| Security |	              |	4688      |	Process creation logging |
+| Security |		            | 4720	    | A user account was created |
+| Security |         		    | 4722      |	A user account was enabled |
+| Secutity |                |	4724, 4738 | Additional user creation events |
+| Security |                |	4728      | A member was added to a security-enabled global group |
+| Security |	  	          | 4732      |	A member was added to a security-enabled local group |
+| Security |    		        | 1102      |	Clear Event log |
+| Application |	EMET	      | 2         |	EMET detected ... mitigation and will close the application: ...exe |
+| Firewall |               	|	2003	    | Disable firewall |
+| Microsoft-Windows-AppLocker/EXE and DLL |   |	8003 |	(EXE/MSI) was allowed to run but would have been prevented from running if the AppLocker policy were enforced |
+| Microsoft-Windows-AppLocker/EXE and DLL |    | 8004	 | (EXE/MSI) was prevented from running. |
+| Microsoft-Windows-WindowsDefender/Operational |   |	1116 |	Windows Defender has detected malware or other potentially unwanted software |
+| Microsoft-Windows-WindowsDefender/Operational	|   |	1117 |	Windows Defender has taken action to protect this machine from malware or other potentially unwanted software |
+
+---
+
 **Check your logs for suspicious events, such as:**
 
 * “Event log service was stopped.”
@@ -468,6 +494,164 @@ C:\> dir c:\
 </p>
 </details>
 
-## TCPDUMP
+## tcpdump
 
-## Wireshark
+<details><summary><b>Syntax</b></summary>
+<p>
+
+```
+tcpdump	[-aAenStvxX] [-F filterfile] [-i int] [-c n] [-r pcapfile] [-s snaplen] [-w pcapfile] [‘bpf filter’]
+```
+
+```
+-A     display payload
+-c n   display first n packets
+-D     list interfaces
+-e     display data link header
+-F     read filter expression from file
+-i     listen on specified interface
+-n     do not resolve IP addresses / ports
+-r     read packets from file
+-s     set snap length in bytes
+-S     display absolute TCP sequence numbers
+-t     don't print timestamp
+-tttt  print date and time
+-v     verbose (multiple v: more verbose)
+- w    write packets to file
+-x     display in hex
+-xx    display link layer in hex
+-X     display in hex + ASCII
+```
+
+</p>
+</details>
+
+<details><summary><b>Commands</b></summary>
+<p>
+
+**View Traffic with timestamps, don't convert addresses, and be verbose:**
+
+`tcpdump -tttt -n -vv`
+
+---
+
+**Find the top talkers after 1000 packets (Potential DDOS):**
+
+`tcpdump -nn -c 1000 | awk '{print $3}' | cut -d. -f1-4 | sort-n | uniq -c | sort -nr`
+
+---
+
+**Capture traffic on any interface from a target host and specific port and output to a file:**
+
+`tcpdump -w <FILENAME>.pcap -i any dst <TARGET IP ADDRESS> and port 80`
+
+---
+
+**View traffic only between two hosts:**
+
+`tcpdump host 10.0.0.1 && host 10.0.0.2`
+
+---
+
+**View all traffic except from a net and a host:**
+
+`tcpdump not net 10.10 && not host 192.168.1.2`
+
+---
+
+**View host and either of two other hosts:**
+
+`tcpdump host 10.10.10.10 && \(10.10.10.20 or 10.10.10.30\)`
+
+---
+
+**Save pcap file on rotating size:**
+
+`tcpdump -n -s65535 -C 1000 -w '%host_%Y-%m-%d_%H:%M:%S.pcap`
+
+---
+
+**Save pcap file to a remote host:**
+
+`tcpdump -w | ssh <REMOTE HOST ADDRESS> -p 50005 "cat - > /tmp/remotecapture.pcap"`
+
+---
+
+**Grab traffic that contains the word pass:**
+
+`tcpdump -n -A -s0 | grep pass`
+
+---
+
+**Grab many clear text protocols passwords:**
+
+`tcpdump -n -A s0 port http or port ftp or port smtp or port imap or port pop3 or port telnet | egrep -i 'pass=|pwd=|log=|login=|user=|pw=|passw=|passwd=|password=|pass:|user:|username:|password:|login:|pass |user ' --color=auto --line-buffered -B20`
+
+---
+
+**Get throughput:**
+
+`tcpdump -w - |pv -bert >/dev/null`
+
+---
+
+**Filter out IPv6 traffic:**
+
+`tcpdump not ip6`
+
+---
+
+**Filter out IPv4:**
+
+`tcpdump ip6`
+
+---
+
+**Find traffic with evil bit: There’s a bit in the IP header that never gets set by legitimate applications, which we call the “Evil Bit”. Here’s a fun filter to find packets where it’s been toggled.**
+
+`tcpdump 'ip[6] & 128 != 0'`
+
+---
+
+**Look for suspicious and self-signed SSL certificates:**
+
+`tcpdump -s 1500 -A '(tcp[((tcp[12:1] & 0xf0) >> 2)+5:1] = 0x01) and (tcp[((tcp[12:1] & 0xf0) >> 2):1] = 0x16)'`
+
+</p>
+</details>
+
+## TShark
+
+<details><summary><b>Commands</b></summary>
+<p>
+
+**List of network interfaces:**
+
+`tshark -D`
+
+---
+
+**Listen on multiple network interfaces:**
+
+`tshark -i eth1 -i eth2 -i eth3`
+
+---
+
+**Save to pcap file and disable name resolution:**
+
+`tshark -nn -w <FILENAME>.pcap`
+
+---
+
+**Get absolute date and time stamp:**
+
+`tshark -t a`
+
+---
+
+**Get arp or icmp traffic:**
+
+`tshark arp or icmp`
+
+</p>
+</details>

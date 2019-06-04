@@ -2,6 +2,8 @@
 
 ## Linux Commands
 
+[Linux Documentation](https://linux.die.net/)
+
 <details><summary><b>Connections</b></summary>
 <p>
 
@@ -190,6 +192,8 @@ lsof -V
 </details>
 
 ## Windows Commands
+
+[Microsoft Command Documentation](https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/windows-commands#n)
 
 <details><summary><b>Connections</b></summary>
 <p>

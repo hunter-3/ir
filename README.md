@@ -197,7 +197,9 @@ lsof -V
 
 [Microsoft Command Documentation](https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/windows-commands#n)
 
-[Windows Live Forensics via John Strand](https://www.youtube.com/watch?v=HcUMXxyYsnw)
+[Windows Live Forensics](https://www.youtube.com/watch?v=HcUMXxyYsnw)
+
+[Windows Memory Forensics](https://www.youtube.com/watch?v=cYphLiySAC4)
 
 <details><summary><b>Connections</b></summary>
 <p>

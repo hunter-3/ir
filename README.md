@@ -512,7 +512,7 @@ C:\> reg query <reg key>
 </p>
 </details>
 
-<details><summary><b>Accounts</b></summary>
+<details><summary><b>Users</b></summary>
 <p>
 
 **Look for new, unexpected accounts in the Administrators group. Click on Groups, Double Click on Administrators, then

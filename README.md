@@ -179,18 +179,68 @@ lsof -V
 <details><summary><b>Cron</b></summary>
 <p>
 
+**Check scheduled tasks:**
+`
+crontab -l
+`
 
 </p>
 </details>
 
-<details><summary><b>Accounts</b></summary>
+<details><summary><b>Users</b></summary>
 <p>
 
+**Find all ssh authorized_keys files:**
+```
+find / -name authorized_keys
+```
+**History files for users:**
+```
+find / -name .*history
+```
+**History files linked to /dev/null:**
+```
+ls -alR / 2> /dev/null | grep .*history |  grep null
+```
+**Look for UID 0/GID 0:**
+```
+grep ":0:" /etc/passwd
+```
+**Check sudoers file:**
+```
+cat /etc/sudoers and /etc/group
+```
+**Check scheduled tasks:**
+```
+crontab -l
+atq
+systemctl list-timers --all
+```  
+  
 </p>
 </details>
 
 <details><summary><b>Files</b></summary>
 <p>
+
+</p>
+</details>
+  
+<details><summary><b>Directories</b></summary>
+<p>
+
+**Commonly targeted directories:**
+```
+/tmp, /var/tmp, /dev/shm, /var/run, /var/spool, user home directories
+```
+**List and delimit spaces, etc. in names:**
+```
+ls -lap
+```
+**List all hidden directories:**
+```
+find / -type d -name ".*"
+```
 
 </p>
 </details>
